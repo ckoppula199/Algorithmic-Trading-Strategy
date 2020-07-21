@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 plt.style.use('fivethirtyeight')
 
 # Stock symbol can be changed to use on different companies
-STOCK_SYMBOL = "FB"
+STOCK_SYMBOL = "AAPL"
 
 # Authenticating quandl API
 with open('config.json') as config_file:
@@ -98,3 +98,21 @@ def buy_sell(data):
             sell_stock.append(np.nan)
 
     return (buy_stock, sell_stock)
+
+buy_signal, sell_signal = buy_sell(data)
+# Add columns to the data DataFrame for buy and sell indicators
+data["Buy_Signal_Price"] = buy_signal
+data["Sell_Signal_Price"] = sell_signal
+
+# Visualise dat with moving averages
+plt.figure(figsize=(12, 6))
+plt.plot(data[f"{STOCK_SYMBOL}"], label=f"{STOCK_SYMBOL}", alpha=0.35)
+plt.plot(data["SMA_30"], label="SMA30", alpha=0.35)
+plt.plot(data["SMA_100"], label="SMA100", alpha=0.35)
+plt.scatter(data.index, data["Buy_Signal_Price"], label='Buy_Signal', marker='^', color='green')
+plt.scatter(data.index, data["Sell_Signal_Price"], label='Sell_Signal', marker='v', color='red')
+plt.title(f"{STOCK_SYMBOL} Buy and Sell Signals")
+plt.xlabel("Date")
+plt.ylabel("Adjusted Close Price USD ($)")
+plt.legend(loc='upper left')
+plt.show()
