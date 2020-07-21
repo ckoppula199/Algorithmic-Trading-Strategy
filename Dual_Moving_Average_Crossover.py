@@ -44,7 +44,7 @@ SMA_100['Adj Close Price'] = dataset['Adj. Close'].rolling(window=100).mean()
 print("First 5 rows of 100 day moving average")
 print(SMA_30.head(), end='\n\n\n')
 
-# Visualise dat with moving averages
+# Visualise data with moving averages
 plt.figure(figsize=(12, 6))
 plt.plot(dataset['Adj. Close'], label=f"{STOCK_SYMBOL}")
 plt.plot(SMA_30['Adj Close Price'], label="SMA30")
@@ -79,6 +79,9 @@ def buy_sell(data):
                 flag = 1
                 buy_stock.append(data[STOCK_SYMBOL][index])
                 sell_stock.append(np.nan)
+            else:
+                buy_stock.append(np.nan)
+                sell_stock.append(np.nan)
 
         elif data['SMA_30'][index] < data['SMA_100'][index]:
             # If the last action wasn't already selling a stock then sell stock
@@ -86,7 +89,12 @@ def buy_sell(data):
                 flag = 0
                 buy_stock.append(np.nan)
                 sell_stock.append(data[STOCK_SYMBOL][index])
+            else:
+                buy_stock.append(np.nan)
+                sell_stock.append(np.nan)
 
         else:
             buy_stock.append(np.nan)
             sell_stock.append(np.nan)
+
+    return (buy_stock, sell_stock)
